@@ -75,10 +75,10 @@ class DICOM_Folder_Converter():
             sitk.WriteImage(mask, os.path.join(dst,'{}_{}.nii'
                                                 .format(filename, name)))
 
-    def get_image():
+    def get_image(self):
         return self.image
 
-    def get_masks():
+    def get_masks(self):
         return self.masks
 
     def __identify_rt_struct_file__(self):
@@ -147,4 +147,5 @@ def convert_folder_dcm_to_nii(src, dst):
     data.save_image(dst)
     data.save_mask(dst)
 
-convert_folder_dcm_to_nii(r'C:\Users\franzihk\Downloads\teste\DICOM', '.')
+
+convert_folder_dcm_to_nii(r'/Volumes/Untitled/LARC_T2_cleaned/LARC-RRP-001/MRS1/DICOM', '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-001/MRS1')
