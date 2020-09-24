@@ -1,8 +1,8 @@
 # %%
 import os
 
-src_main_folder = r'D:\LARC_T2' #Change to your path
-dst_main_folder = r'D:\LARC_T2_cleaned' #Change to your path
+src_main_folder = r'/Volumes/Untitled/LARC_T2_cleaned' #Change to your path
+dst_main_folder = r'/Volumes/Untitled/LARC_T2_cleaned_nii' #Change to your path
 patient_identifier = 'LARC-RRP'
 scan_time_point_folder = 'MRS1'
 
