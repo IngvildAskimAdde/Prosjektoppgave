@@ -29,6 +29,4 @@ dim_overview = Counter(chain(*dim_list)) #A dictionary with all the different di
 #Creating a DataFrame to represent the dimension data
 df = pd.DataFrame.from_dict(dim_overview, orient='index')
 df_new = df.rename(columns={' ':'Image', 0:'Number of images'})
-print(df_new, "")
-
-
+print(df_new)
