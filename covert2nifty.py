@@ -5,6 +5,7 @@ import SimpleITK as sitk
 import pydicom
 from PIL import Image as pil_Image
 from PIL import ImageDraw as pil_ImageDraw
+from pathlib import Path
 
 
 class DICOM_Folder_Converter():
@@ -75,10 +76,10 @@ class DICOM_Folder_Converter():
             sitk.WriteImage(mask, os.path.join(dst,'{}_{}.nii'
                                                 .format(filename, name)))
 
-    def get_image():
+    def get_image(self):
         return self.image
 
-    def get_masks():
+    def get_masks(self):
         return self.masks
 
     def __identify_rt_struct_file__(self):
@@ -147,4 +148,28 @@ def convert_folder_dcm_to_nii(src, dst):
     data.save_image(dst)
     data.save_mask(dst)
 
-convert_folder_dcm_to_nii(r'C:\Users\franzihk\Downloads\teste\DICOM', '.')
+
+#Beginner paths of source folders and destination folders
+src_path = Path('/Volumes/Untitled/LARC_T2_cleaned')
+dst_path = Path('/Volumes/Untitled/LARC_T2_cleaned_nii')
+
+
+identifyer = '*/MRS1' #Identification of a folder path
+
+#Lists for saving the src and dst paths
+src_list = [] 
+dst_list = []
+
+#Iterating through all folders and saving the correct src and dst paths
+for folder_path in src_path.glob(identifyer):
+    src_list.append(folder_path / 'DICOM')
+
+for folder_path in dst_path.glob(identifyer):
+    dst_list.append(folder_path)
+
+#Converting from DICOM to nii files for all the paths in src_list and dst_list
+for i in range(len(src_list)):
+    convert_folder_dcm_to_nii(str(src_list[i]), str(dst_list[i]))
+    print(i)
+
+print('done')
