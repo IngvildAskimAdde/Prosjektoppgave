@@ -153,6 +153,7 @@ def convert_folder_dcm_to_nii(src, dst):
 src_path = Path('/Volumes/Untitled/LARC_T2_cleaned')
 dst_path = Path('/Volumes/Untitled/LARC_T2_cleaned_nii')
 
+#convert_folder_dcm_to_nii(r'/Volumes/Untitled/LARC_T2_cleaned/LARC-RRP-039/MRS1/DICOM', '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-039/MRS1')
 
 identifyer = '*/MRS1' #Identification of a folder path
 
