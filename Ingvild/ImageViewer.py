@@ -9,15 +9,12 @@ import SimpleITK as sitk
 Further ideas for the Viewer:
 [ ] be abble to hide / show the title by pressing "t"
 [ ] be able to set images and masks from numpy arrays instead of sitk images
-
 """
 class Viewer(object):
     """
     Display images and masks as montage or individual slices.
-
     The viewer reacts to the keyboard.
     Press  "h" to show a legend with the avaliable hotkeys.
-
     """
     colors = {
         'red' :     [230, 25, 75],
@@ -55,7 +52,6 @@ class Viewer(object):
             - idx_slice: slice to show in 3d viewer
             - mask_to_show: list with mask_keys ['a', 'b', ...]
             - mask_mode: list with one or both of  '9'(overlay) and '8' (contour)
-
         """
         """ input data """
         self.image_data = {}
@@ -180,7 +176,6 @@ class Viewer(object):
     def set_image(self, image_sitk, label='image'):
         """
         set the image that shall be displayed
-
         """
         for idx in range(122, 96, -1): # z to a
             try_key = chr(idx)
@@ -223,7 +218,6 @@ class Viewer(object):
         label : text to show in get_legend
         color_name : see Viewer.colors for options
         color_rgb: list with rgb values in range 0 to 255
-
         """
         for idx in range(97, 123): # a to z
             try_key = chr(idx)
@@ -304,7 +298,6 @@ class Viewer(object):
         change between:
         '1': 3d Viewer
         '2': Montage
-
         Note: Check if numlock is active if you encounter unexpected behaviour
         """
         if not new_mode == self.view_mode:
@@ -324,7 +317,6 @@ class Viewer(object):
     def change_image_visibility(self, new_image_to_show):
         """
         change which image is displayed
-
         """
         if not new_image_to_show == self.image_to_show:
             self.image_to_show = new_image_to_show
@@ -343,7 +335,6 @@ class Viewer(object):
     def toggle_legend(self):
         """
         Toggle wether the legend is shown or not
-
         """
         if not self.ax.get_legend():
             self.ax.legend(bbox_to_anchor=(1., 1.), loc='upper left', borderaxespad=0.)
@@ -354,7 +345,6 @@ class Viewer(object):
     def print_current_view(self, file_name = 'viewer_image', image_type='pdf', overwrite=False):
         """
         Print the current view (= content of the figure window) to a file_name
-
         """
         path_to_file = file_name+'.'+image_type
         if os.path.isfile(path_to_file) and not overwrite:
@@ -405,18 +395,25 @@ class Viewer(object):
             self.display[key].set_visible(key == self.image_to_show)
 
     def __find_contour(self, mask_sitk):
-        contour_sitk = sitk.Image(mask_sitk.GetSize(), sitk.sitkUInt8)
-        contour_sitk.CopyInformation(mask_sitk)
+#         contour_sitk = sitk.Image(mask_sitk.GetSize(), sitk.sitkUInt8)
+#         contour_sitk.CopyInformation(mask_sitk)
         size = mask_sitk.GetSize()[0:2]
         dilate = sitk.BinaryDilateImageFilter()
         dilate.SetKernelRadius(self.line_width_increase)
 
-        for s in range(mask_sitk.GetDepth()):
-            contour_sitk = sitk.Paste(contour_sitk,
-                       sitk.JoinSeries(dilate.Execute(
-                                    sitk.LabelContour(mask_sitk[:,:,s])>0)),
-                       size,
-                       destinationIndex=[0,0,s])
+#         for s in range(mask_sitk.GetDepth()):
+#             contour_sitk = sitk.Paste(contour_sitk,
+#                        sitk.JoinSeries(dilate.Execute(
+#                                     sitk.LabelContour(mask_sitk[:,:,s])>0)),
+#                        size,
+#                        destinationIndex=[0,0,s])
+        contour_slices = [dilate.Execute(sitk.LabelContour(mask_sitk[:,:,s]>0))
+                            for s in range(mask_sitk.GetDepth())]
+#         (m.CopyInformation(contour_slices[0]) for m in contour_slices[1:])
+        for s in range(1, len(contour_slices)):
+            contour_slices[s].CopyInformation(contour_slices[0])
+        contour_sitk = sitk.JoinSeries(contour_slices)
+        contour_sitk.CopyInformation(mask_sitk)
         return contour_sitk
 
 
@@ -424,11 +421,9 @@ class Viewer(object):
 def combine_masks(mode, mask_sitk_1, mask_sitk_2):
     """
     Get the union or intersection of two masks
-
     :param mode: 'union' ('u') or 'intersection' ('i')
     :param mask_sitk: sitk images
     :returns: new_mask (sitk_image)
-
     """
     if mode in ['union', 'u']:
         new_mask = sitk.Or(mask_sitk_1, mask_sitk_2)
@@ -443,12 +438,10 @@ def checkerboard(img1, img2, board_size=25):
     """
     Combines both input images in a checkerboard view.
     Can be used to evaluate the results of an image registration
-
     :param img1: sitk image
     :param img2: sitk image, same origin, spacing and direction as img1
     :param board_size: (optional) number of checkerboard fields
     :returns: sitk image
-
     """
     img1, img2 = check_spatial_properties(img1, img2, output=True)
     return sitk.CheckerBoard(img1, img2, [board_size, board_size, 1])
@@ -457,12 +450,9 @@ def imfuse(img1, img2):
     """
     Fuse the images in different color channels (magenta and green).
     Areas of a agreement are in grayscale
-
     :param img1: sitk image, displayed in magenta
     :param img2: sitk image, displayed in green
-
     :returns fused image: sitk (color) image
-
     """
     check_spatial_properties(img1, img2)
 
@@ -482,7 +472,6 @@ def imfuse_stack(image_list):
     """
     Overlay a list of images in different colorchannels
     (mainly to inspect groupwise registration)
-
     """
     colors = [ [255,   0, 255], # Magenta
                [  0, 255,   0], # Green
@@ -513,14 +502,12 @@ def imfuse_stack(image_list):
 def check_spatial_properties(img1, img2, tolerance=1e-4, output=False):
     """
     Checks if origin, spacing and direction of two imgaes are the same
-
     :param img1: sitk image
     :param img2: sitk image
     :param tolerance: tolerance for each individual propertie to be considered
                       equal
     :param output: Sets if an output is returned or not
     :returns: img1, img2.CopyInformation(img1) [if output == True]
-
     """
     errorText = ''
     for spatial_property in ['Origin', 'Spacing', 'Direction']:
@@ -539,7 +526,6 @@ def show_folder(path_to_folder, image_prefix='img', mask_prefix='Mask', file_typ
     """
     Show all images in one folder
     (All images need to have the same dimensions / spatial properties)
-
     """
 
     v = Viewer()
