@@ -3,8 +3,8 @@ import os
 
 import pandas as pd
 
-excel_file = 'Experiments.xlsx'
-dst_folder = 'Parameter_files'
+excel_file = 'Experiments_test.xlsx'
+dst_folder = 'Parameter_files_test'
 sheet_name = 'Runs'
 common_parameters = pd.read_excel(excel_file, sheet_name='FixedValues')
 
