@@ -19,7 +19,24 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="06044de5-3d77-4c22-ae3f-9c5d6221ef8a" name="Default Changelist" comment="" />
+    <list default="true" id="06044de5-3d77-4c22-ae3f-9c5d6221ef8a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/ParameterFiles_from_Excel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/main.m" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/niftiImage.m" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/niftiread.m" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/nii2mat_input_conversion.m" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/read_parameters_from_txt_file.m" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/sortData.m" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/test_data/Oxytarget_27_PRE/Mask.nii" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/test_data/Oxytarget_27_PRE/T2.nii" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/test_data/Oxytarget_29_PRE/Mask.nii" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/test_data/Oxytarget_29_PRE/T2.nii" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/test_data/Oxytarget_31_PRE/Mask.nii" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/test_data/Oxytarget_31_PRE/T2.nii" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ShallowML_Training/unfold_image_to_data_matrix.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ShallowML_Training/Experiments.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/ShallowML_Training/Experiments.xlsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,6 +130,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
