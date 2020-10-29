@@ -136,8 +136,8 @@ def data_balance(paths):
 
 img_array, imsize = get_array('/Volumes/Untitled/LARC_T2_preprocessed/LARC-RRP-003/image.nii')
 
-im = np.reshape(img_array,imsize)
-im = im.astype(int)
-im = sitk.GetImageFromArray(im)
+#im = np.reshape(img_array,imsize)
+#im = im.astype(int)
+#im = sitk.GetImageFromArray(im)
 
-plt.imshow(im)
+#plt.imshow(im)
