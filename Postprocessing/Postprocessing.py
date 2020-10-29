@@ -7,6 +7,7 @@ import pandas as pd
 import SimpleITK as sitk
 
 import Preprocessing.ImageViewer as iv
+import get_data as gd
 
 def get_seed_from_ground_truth_per_slice(mask_gt):
     """
@@ -34,7 +35,7 @@ def show_seeds_montage(mask_gt, seed_list):
     v.show()
 
 
-def get_seeds_all_patients(image_folder, patient_prefix,
+def get_seeds_all_patients(image_folder, patient_prefix, mask_name,
                            csv_file_name='seeds_postprocessing.csv'):
     """
     Uses get_seed_from_ground_truth_per_slice to create a csv that contains
@@ -45,7 +46,7 @@ def get_seeds_all_patients(image_folder, patient_prefix,
     seed_list = []
     for patient in patient_list:
         gt_mask_sitk = sitk.ReadImage(
-            os.path.join(image_folder, patient, 'Mask.nii'))
+            os.path.join(image_folder, patient, mask_name))
         seed_list.append(
             str(get_seed_from_ground_truth_per_slice(gt_mask_sitk)))
 
@@ -100,3 +101,11 @@ def postprocess_mask(mask_sitk, seed_list):
         pp_mask = sitk.And(smoothed_mask, pp_mask)
 
     return pp_mask
+
+path = '/Volumes/Untitled/LARC_T2_preprocessed/LARC-RRP-001/1 RTSTRUCT LARC_MRS1-label.nii'
+mask_array, mask_size = gd.get_array(path)
+mask = gd.create_image_from_array(mask_array,mask_size)
+seed_list = get_seed_from_ground_truth_per_slice(mask)
+#show_seeds_montage(mask, seed_list)
+#get_seeds_all_patients('/Volumes/Untitled/LARC_T2_preprocessed', 'LARC', '1 RTSTRUCT LARC_MRS1-label.nii')
+read_seeds_from_csv('/Volumes/Untitled/LARC_T2_preprocessed', 'seeds_postprocessing.csv')
