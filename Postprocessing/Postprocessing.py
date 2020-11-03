@@ -8,6 +8,7 @@ import SimpleITK as sitk
 
 import Preprocessing.ImageViewer as iv
 import get_data as gd
+import matplotlib.pyplot as plt
 
 def get_seed_from_ground_truth_per_slice(mask_gt):
     """
@@ -108,4 +109,9 @@ mask = gd.create_image_from_array(mask_array,mask_size)
 seed_list = get_seed_from_ground_truth_per_slice(mask)
 #show_seeds_montage(mask, seed_list)
 #get_seeds_all_patients('/Volumes/Untitled/LARC_T2_preprocessed', 'LARC', '1 RTSTRUCT LARC_MRS1-label.nii')
-read_seeds_from_csv('/Volumes/Untitled/LARC_T2_preprocessed', 'seeds_postprocessing.csv')
+seeds = read_seeds_from_csv('/Volumes/Untitled/', 'seeds_postprocessing.csv')
+mask_sitk = sitk.ReadImage('/Volumes/Untitled/Results/ID_0/LARC-RRP-001.nii')
+
+pp_mask = postprocess_mask(mask_sitk, seed_list)
+show_seeds_montage(pp_mask, seed_list)
+show_seeds_montage(mask_sitk, seed_list)
