@@ -7,9 +7,11 @@ use
 sitk.ReadImage(path_to_file)>0
 in order to get a binary image!
 """
-
+import os
 import numpy as np
 import SimpleITK as sitk
+import pandas as pd
+import get_data as gd
 
 def calculate_dice(mask_a, mask_b):
     """
@@ -47,3 +49,55 @@ def calculate_msd(mask_a, mask_b):
     MSD=(n_voxel[0]*mean_val[0]+n_voxel[1]*mean_val[1])/(n_voxel[0]+n_voxel[1])
 
     return MSD
+
+def mean_columns(dataframe):
+    dict = {}
+    for column in dataframe:
+        dict[column] = [dataframe[column].mean()]
+    return dict
+
+
+result_folder = '/Volumes/Untitled/Results/'
+
+resultPaths = {}
+
+
+for experiment in os.listdir(result_folder):
+    experimentPath = os.path.join(result_folder, experiment)
+    if os.path.isdir(experimentPath):
+        for patient in os.listdir(experimentPath):
+            patientResultPath = os.path.join(experimentPath, patient)
+            if experiment in resultPaths:
+                resultPaths[experiment].append(patientResultPath)
+            else:
+                resultPaths[experiment] = [patientResultPath]
+
+patientsPaths, patientsNames, patientsPaths_image, patientPaths_groundTruth = gd.get_paths('/Volumes/Untitled/LARC_T2_preprocessed', image_prefix='image', mask_suffix='label.nii')
+patientPaths_groundTruth.insert(0, patientPaths_groundTruth.pop(len(patientPaths_groundTruth) - 1))
+
+dice = {}
+msd = {}
+
+for key in resultPaths:
+    for i in range(len(patientPaths_groundTruth)):
+        mask_pred = sitk.ReadImage(resultPaths[key][i]) > 0
+        mask_truth = sitk.ReadImage(patientPaths_groundTruth[i]) > 0
+        dice_score = calculate_dice(mask_pred, mask_truth)
+        msd_score = calculate_msd(mask_pred, mask_truth)
+        if key in dice:
+            dice[key].append(dice_score)
+            msd[key].append(msd_score)
+        else:
+            dice[key] = [dice_score]
+            msd[key] = [msd_score]
+
+df_dice = pd.DataFrame(dice)
+df_msd = pd.DataFrame(msd)
+mean_dice = mean_columns(df_dice)
+mean_msd = mean_columns(df_msd)
+
+df_dice_mean = pd.DataFrame(mean_dice)
+df_msd_mean = pd.DataFrame(mean_msd)
+
+boxplot_dice = df_dice_mean.boxplot()
+boxplot_msd = df_msd_mean.boxplot()
