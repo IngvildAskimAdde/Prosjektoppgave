@@ -1,0 +1,11 @@
+folder_to_save_result = LARC-RRP_results
+ID = 8
+folder_patient_image_data = /Volumes/Untitled/LARC_T2_preprocessed
+patient_prefix = LARC-RRP
+normalise = ZScore_PerImage_PerPatient
+downsampling = Patient-50/50
+ground_truth = 1 RTSTRUCT LARC_MRS1-label
+model = SVM
+T2_unfolding = R1_3D
+T2_sorting = Yes
+images_to_use = T2
