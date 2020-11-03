@@ -52,6 +52,7 @@ def get_paths(main_folder, image_prefix, mask_suffix):
         patientsPaths_groundTruth[len(patientsPaths_groundTruth) - 1].replace('._1', '1')
         patientsPaths_groundTruth.remove(patientsPaths_groundTruth[len(patientsPaths_groundTruth) - 1])
 
+
     return patientsPaths, patientsNames, patientsPaths_image, patientsPaths_groundTruth
 
 patientsPaths, patientsNames, patientsPaths_image, patientPaths_groundTruth = get_paths(main_folder, image_prefix, mask_suffix)
