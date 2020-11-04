@@ -57,6 +57,19 @@ def get_paths(main_folder, image_prefix, mask_suffix):
 
 patientsPaths, patientsNames, patientsPaths_image, patientPaths_groundTruth = get_paths(main_folder, image_prefix, mask_suffix)
 
+def result_paths(result_folder):
+    resultPaths = {}
+
+    for experiment in os.listdir(result_folder):
+        experimentPath = os.path.join(result_folder, experiment)
+        if os.path.isdir(experimentPath):
+            for patient in os.listdir(experimentPath):
+                patientResultPath = os.path.join(experimentPath, patient)
+                if experiment in resultPaths:
+                    resultPaths[experiment].append(patientResultPath)
+                else:
+                    resultPaths[experiment] = [patientResultPath]
+    return resultPaths
 
 def data_dimensions(src_path, identifyer):
     """
