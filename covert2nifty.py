@@ -1,3 +1,7 @@
+"""
+@author: franzi-ska
+"""
+
 import os
 
 import numpy as np
@@ -27,7 +31,7 @@ class DICOM_Folder_Converter():
 
     def load_image(self):
         """
-        Load the dicom fiels into an sitk image
+        Load the dicom files into an sitk image
         """
         dcm_reader = sitk.ImageSeriesReader()
         dcm_reader.SetFileNames(self.image_dcm_file_list)
