@@ -1,16 +1,21 @@
-from nilearn import plotting
+"""
+@author: IngvildAskimAdde
+
+This file contains various functions in order to collect different data
+such as paths, data dimensions and data balance.
+"""
+
+
 import os
 import numpy as np
 import nibabel as nib
-from pathlib import Path
 import pandas as pd
 from collections import Counter
 from itertools import chain
 import SimpleITK as sitk
-import matplotlib.pyplot as plt
 
-#Iterate through all the folders and get the full path of each .nii file
-#main_folder = Path('/Volumes/Untitled/LARC_T2_preprocessed')
+
+
 main_folder = '/Volumes/Untitled/LARC_T2_preprocessed'
 identifyer_image = '**/*image.nii'
 identifyer_mask = '**/*label.nii'
@@ -19,6 +24,16 @@ image_prefix = 'image'
 mask_suffix = 'label.nii'
 
 def get_paths(main_folder, image_prefix, mask_suffix):
+
+    """
+    Input: A folder containing several patients
+
+    Output:
+    - List of paths to patients
+    - List of paths to patients image files
+    - List of paths to patients ground truth files
+    - List of patient names
+    """
 
     patientsPaths = []
     patientsPaths_image = []
@@ -31,7 +46,7 @@ def get_paths(main_folder, image_prefix, mask_suffix):
             patientsPaths.append(patientsPath)
             patientsNames.append(entry)
 
-        if main_folder.endswith('preprocessed'):
+        if main_folder.endswith('preprocessed') or main_folder.endswith('corrected') or main_folder.endswith('target'):
 
             for i in os.listdir(patientsPath):
                 if i.startswith(image_prefix):
@@ -47,7 +62,7 @@ def get_paths(main_folder, image_prefix, mask_suffix):
                 elif i.endswith(mask_suffix):
                     patientsPaths_groundTruth.append(os.path.join(patientsPath,i))
 
-    if main_folder.endswith('preprocessed'):
+    if main_folder.endswith('LARC_T2_preprocessed'):
         # Fixing bug in the label string of patient 001
         patientsPaths_groundTruth[len(patientsPaths_groundTruth) - 1].replace('._1', '1')
         patientsPaths_groundTruth.remove(patientsPaths_groundTruth[len(patientsPaths_groundTruth) - 1])
@@ -55,9 +70,17 @@ def get_paths(main_folder, image_prefix, mask_suffix):
 
     return patientsPaths, patientsNames, patientsPaths_image, patientsPaths_groundTruth
 
-patientsPaths, patientsNames, patientsPaths_image, patientPaths_groundTruth = get_paths(main_folder, image_prefix, mask_suffix)
+
 
 def result_paths(result_folder):
+
+    """
+    Input: Path to folder with results (predicted masks)
+
+    Output: A dictionary containing the path to the predicted
+    mask for each of the different ID's (experiments)
+    """
+
     resultPaths = {}
 
     for experiment in os.listdir(result_folder):
@@ -70,6 +93,8 @@ def result_paths(result_folder):
                 else:
                     resultPaths[experiment] = [patientResultPath]
     return resultPaths
+
+
 
 def data_dimensions(src_path, identifyer):
     """
@@ -115,13 +140,15 @@ def data_dimensions(src_path, identifyer):
 
     return src_list, df_dim, df_vox
 
-#src_list_img, df_dim_img, df_vox_img = data_dimensions(main_folder, identifyer_image)
-#src_list_mask, df_dim_mask, df_vox_mask = data_dimensions(main_folder, identifyer_mask)
-
-
 
 
 def get_array(path):
+
+    """
+    Input: Path to image files
+    Output: sitk array of image file, and image size
+    """
+
     img = sitk.ReadImage(path)
     array = sitk.GetArrayFromImage(img)
     imsize = np.shape(array)
@@ -131,27 +158,36 @@ def get_array(path):
 
 def data_balance(paths):
 
+    """
+    Input: List of paths to images
+
+    Output: Percentage of tumor and non-tumor
+    voxels in the list of images
+    """
+
     tumor_voxels = []
     non_tumor_voxels = []
 
+    #Iterate through all images in the list of paths
     for i in paths:
-        print(i)
         array, imsize = get_array(i)
-        tumor_voxels.append(np.count_nonzero(array==1))
-        non_tumor_voxels.append(np.count_nonzero(array==0))
+        tumor_voxels.append(np.count_nonzero(array==1))         #Appends the voxel to tumor list if the value is 1
+        non_tumor_voxels.append(np.count_nonzero(array==0))     #Appends the voxel to non-tumor list if the value is 0
 
+    #Calculate percentage
     total_voxels = np.sum(tumor_voxels) + np.sum(non_tumor_voxels)
     tumor_percentage = (np.sum(tumor_voxels)/total_voxels)*100
     non_tumor_percentage = (np.sum(non_tumor_voxels)/total_voxels)*100
 
     return tumor_percentage, non_tumor_percentage
 
-#tumor, non_tumor = data_balance(patientPaths_groundTruth)
 
-img_array, imsize = get_array('/Volumes/Untitled/LARC_T2_preprocessed/LARC-RRP-003/image.nii')
 
-#Creates an image object from a 1D array
 def create_image_from_array(array, imsize):
+    """
+    Input: Image as array, and image size
+    Output: Image object
+    """
     im = np.reshape(array,imsize)
     im = im.astype(int)
     im = sitk.GetImageFromArray(im)
