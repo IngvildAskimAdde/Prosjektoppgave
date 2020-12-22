@@ -1,5 +1,8 @@
-# -*- coding: utf-8 -*-
-#%%
+"""
+@author: franzi-ska
+"""
+
+
 import os
 
 import numpy as np
@@ -23,7 +26,8 @@ class Viewer(object):
         'blue' :    [0, 130, 200],
         'orange' :  [245, 130, 48],
         'purple' :  [145, 30, 180],
-        'cyan' :    [70, 240, 240],
+        #'cyan' :    [70, 240, 240],
+        'cyan': [0, 255, 255],
         'magenta' : [240, 50, 230],
         'lime' :    [210, 245, 60],
         'pink' :    [250, 190, 190],
@@ -39,6 +43,8 @@ class Viewer(object):
         'grey' :    [128, 128, 128],
         'white' :   [255, 255, 255],
         'black' :   [0, 0, 0],
+        'mediumseagreen' : [60, 179, 113],
+        'skyblue' : [135, 206, 235],
             }
     overlay_opacity = 255//2 #  value between 0 and 255
     contour_opacity = 255    #  value between 0 and 255
