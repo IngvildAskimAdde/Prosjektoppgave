@@ -1,4 +1,9 @@
 # %% Find seeds
+
+"""
+@author: franzi-ska
+"""
+
 import os
 import random
 import ast
@@ -103,18 +108,24 @@ def postprocess_mask(mask_sitk, seed_list):
 
     return pp_mask
 
-def main_post(ground_truth_folder, result_main_folder, destination_main_folder, image_prefix='image', mask_suffix='label.nii'):
-    patientPaths, patientsNames, patientsPaths_image, patientPaths_gt = gd.get_paths(ground_truth_folder, image_prefix=image_prefix, mask_suffix=mask_suffix)
-    patientPaths_gt.insert(0, patientPaths_gt.pop(len(patientPaths_gt) - 1))
-    patientsNames.insert(0, patientsNames.pop(len(patientsNames) - 1))
-    resultPaths = gd.result_paths(result_main_folder)
-    pp_path = destination_main_folder
+def main_post(patientPaths_gt, patientsNames, resultPaths, destination_main_folder):
 
+    """
+    Post-processing of predicted masks.
+
+    Input: Paths to ground truth, to patient names, to predicted masks and to destination folder
+    Output: Post-processed masks in destination folder
+
+    """
 
     for key in resultPaths:
         print(key)
-        destination_folder = os.path.join(pp_path, key)
-        for i in range(2):#(len(patientPaths_gt)):
+        resultPaths[key] = [filename for filename in resultPaths[key] if not filename.endswith(".mat")]
+        destination_folder = os.path.join(destination_main_folder, key)
+        for i in range(len(patientPaths_gt)):
+            print(patientPaths_gt[i])
+            print(resultPaths[key][i])
+            print(patientsNames[i])
             mask_array, mask_size = gd.get_array(patientPaths_gt[i])
             mask_gt = gd.create_image_from_array(mask_array,mask_size)
             seed_list = get_seed_from_ground_truth_per_slice(mask_gt)
@@ -122,9 +133,4 @@ def main_post(ground_truth_folder, result_main_folder, destination_main_folder, 
             pp_mask = postprocess_mask(mask_pred, seed_list)
             sitk.WriteImage(pp_mask,os.path.join(destination_folder, patientsNames[i]+'.nii'))
 
-#main_post('/Volumes/Untitled/LARC_T2_preprocessed','/Volumes/Untitled/Results','/Volumes/Untitled/Results_postprocessed')
-
-#mask = sitk.ReadImage('/Volumes/Untitled/Results_preprocessed/ID_3/LARC-RRP-003.nii')
-#v = iv.Viewer(view_mode='2', mask_to_show= ['a'])
-#v.set_image(mask)
-#v.show()
+ 
