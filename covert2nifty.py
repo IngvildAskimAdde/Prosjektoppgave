@@ -1,5 +1,5 @@
 """
-@author: franzi-ska
+@author: franzi-ska (if nothing else is stated)
 """
 
 import os
@@ -153,28 +153,40 @@ def convert_folder_dcm_to_nii(src, dst):
     data.save_mask(dst)
 
 
-#Beginner paths of source folders and destination folders
-src_path = Path('/Volumes/Untitled/LARC_T2_cleaned')
-dst_path = Path('/Volumes/Untitled/LARC_T2_cleaned_nii')
+def convert(src_path, dst_path):
 
-#convert_folder_dcm_to_nii(r'/Volumes/Untitled/LARC_T2_cleaned/LARC-RRP-039/MRS1/DICOM', '/Volumes/Untitled/LARC_T2_cleaned_nii/LARC-RRP-039/MRS1')
+    """
+    @author: IngvildAskimAdde
 
-identifyer = '*/MRS1' #Identification of a folder path
+    Conversion from DICOM files to NIfTI files, by using the convert_folder_dcm_to_nii function.
 
-#Lists for saving the src and dst paths
-src_list = [] 
-dst_list = []
+    Input: Path to folder of patients with DICOM files.
+    Folderstructure of input: src_path -> patients -> MRS1 -> DICOM
 
-#Iterating through all folders and saving the correct src and dst paths
-for folder_path in src_path.glob(identifyer):
-    src_list.append(folder_path / 'DICOM')
+    Output: NIfTI files saved in folder given by dst_path
+    Folderstructure of output: dst_path -> patients -> MRS1 -> image.nii and mask_GTV.nii
+    """
 
-for folder_path in dst_path.glob(identifyer):
-    dst_list.append(folder_path)
+    #Beginner paths of source folders and destination folders
+    src_path = Path(src_path)
+    dst_path = Path(dst_path)
 
-#Converting from DICOM to nii files for all the paths in src_list and dst_list
-for i in range(len(src_list)):
-    convert_folder_dcm_to_nii(str(src_list[i]), str(dst_list[i]))
-    print(i)
+    identifyer = '*/MRS1' #Identification of a folder path
 
-print('done')
+    #Lists for saving the src and dst paths
+    src_list = []
+    dst_list = []
+
+    #Iterating through all folders and saving the correct src and dst paths
+    for folder_path in src_path.glob(identifyer):
+        src_list.append(folder_path / 'DICOM')
+
+    for folder_path in dst_path.glob(identifyer):
+        dst_list.append(folder_path)
+
+    #Converting from DICOM to nii files for all the paths in src_list and dst_list
+    for i in range(len(src_list)):
+        convert_folder_dcm_to_nii(str(src_list[i]), str(dst_list[i]))
+        print(i)
+
+    print('done')
